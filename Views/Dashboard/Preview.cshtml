@@ -1,0 +1,40 @@
+@model Dictionary<string, System.Data.DataTable>
+
+@{
+    ViewData["Title"] = "Vista Previa de las Tablas Normalizadas";
+}
+
+<h2>Vista Previa de las Tablas Normalizadas</h2>
+
+@if (Model != null && Model.Count > 0)
+{
+    foreach (var table in Model)
+    {
+        <h3>@table.Key</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    @foreach (System.Data.DataColumn column in table.Value.Columns)
+                    {
+                        <th>@column.ColumnName</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (System.Data.DataRow row in table.Value.Rows)
+                {
+                    <tr>
+                        @foreach (var item in row.ItemArray)
+                        {
+                            <td>@item</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+else
+{
+    <p>No hay datos disponibles para mostrar.</p>
+}

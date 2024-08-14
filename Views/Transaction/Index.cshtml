@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gestión de Transacciones</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="table-responsive">
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <div class="row">
+                        <div class="col-xs-5">
+                            <h2>Gestión de <b>Transacciones</b></h2>
+                        </div>
+                        <div class="col-xs-7">
+                            <a href="#transactionModal" class="btn btn-primary" data-toggle="modal">
+                                <i class="material-icons">&#xE147;</i> <span>Agregar Nueva Transacción</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Fecha y Hora</th>
+                            <th>Monto</th>
+                            <th>Estado</th>
+                            <th>Tipo</th>
+                            <th>Usuario</th>
+                            <th>Plataforma</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var transaction in Model)
+                        {
+                            <tr>
+                                <td>@transaction.Id</td>
+                                <td>@transaction.DateTime?.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@transaction.Amount</td>
+                                <td>@transaction.Status</td>
+                                <td>@transaction.Type</td>
+                                <td>@transaction.User.Name</td>
+                               
+                                <td>@transaction.Platform.Name</td>
+                                <td>
+                                    <a href="#transactionModal" class="edit" data-toggle="modal" 
+                                       data-id="@transaction.Id" 
+                                       data-datetime="@transaction.DateTime?.ToString("yyyy-MM-ddTHH:mm")"
+                                       data-amount="@transaction.Amount" 
+                                       data-status="@transaction.Status"
+                                       data-type="@transaction.Type" 
+                                       data-userid="@transaction.UserId"
+                                       data-platformid="@transaction.PlatformId">
+                                        <i class="material-icons" title="Editar">&#xE254;</i>
+                                    </a>
+                                    <a href="#deleteTransactionModal" class="delete" data-toggle="modal" 
+                                       data-id="@transaction.Id">
+                                        <i class="material-icons" title="Eliminar">&#xE872;</i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="clearfix">
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Modal para Crear/Editar Transacción -->
+<div id="transactionModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="transactionForm" method="post">
+                <div class="modal-header">						
+                    <h4 class="modal-title">Agregar/Editar Transacción</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">					
+                    <!-- Campo oculto para el Id de la transacción -->
+                    <input type="hidden" id="transactionId" name="Id">
+                    
+                    <div class="form-group">
+                        <label>Fecha y Hora</label>
+                        <input type="datetime-local" id="DateTime" name="DateTime" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Monto</label>
+                        <input type="number" id="Amount" name="Amount" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <input type="text" id="Status" name="Status" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo</label>
+                        <input type="text" id="Type" name="Type" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>ID Usuario</label>
+                        <input type="number" id="UserId" name="UserId" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>ID Plataforma</label>
+                        <input type="number" id="PlatformId" name="PlatformId" class="form-control" required>
+                    </div>					
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                    <input type="submit" class="btn btn-success" value="Guardar">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+    <!-- Modal para Eliminar Transacción -->
+    <div id="deleteTransactionModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="deleteForm" method="post">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Eliminar Transacción</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Estás seguro de que deseas eliminar esta transacción?</p>
+                        <p class="text-warning"><small>Esta acción no se puede deshacer.</small></p>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                        <input type="submit" class="btn btn-danger" value="Eliminar">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+<script>
+$(document).ready(function(){
+    // Configurar el formulario de edición
+    $(document).on('click', '.edit', function(){
+        $('#transactionId').val($(this).data('id')); // Aquí se rellena el Id en caso de editar
+        $('#DateTime').val($(this).data('datetime'));
+        $('#Amount').val($(this).data('amount'));
+        $('#Status').val($(this).data('status'));
+        $('#Type').val($(this).data('type'));
+        $('#UserId').val($(this).data('userid'));
+        $('#PlatformId').val($(this).data('platformid'));
+    });
+
+    // Manejar la sumisión del formulario con AJAX
+    $('#transactionForm').on('submit', function(event){
+        event.preventDefault();
+
+        $.ajax({
+            url: '/Transaction/CreateOrUpdate', // Asegúrate de que esta URL coincida con tu ruta del controlador
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response){
+                if(response.success){
+                    $('#transactionModal').modal('hide');
+                    location.reload(); // Recarga la página para mostrar los cambios
+                } else {
+                    alert(response.message || 'Ocurrió un error al guardar la transacción.');
+                }
+            },
+            error: function(xhr, status, error){
+                console.error('Error al guardar la transacción: ', error);
+                alert('Ocurrió un error al guardar la transacción.');
+            }
+        });
+    });
+});
+
+</script>
+</body>
+
+</html>

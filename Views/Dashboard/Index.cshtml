@@ -1,0 +1,33 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+
+<!-- Page Content -->
+<section class="py-5">
+
+
+    <div class="text-center">
+        <h1 class="display-4">Normalización del Archivo Excel</h1>
+
+
+        <h2>Subir Archivo Excel</h2>
+
+        <form asp-action="Upload" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <input type="file" name="file" class="form-control mb-4" id="file" required />
+            </div>
+            <button type="submit" class="btn btn-primary">Subir y Normalizar</button>
+        </form>
+
+        @if (ViewBag.Message != null)
+        {
+            <div class="alert alert-danger">
+                @ViewBag.Message
+            </div>
+        }
+    </div>
+
+</section>
+
